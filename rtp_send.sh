@@ -1,6 +1,13 @@
-ffmpeg -i /dev/video0 \
-	-vcodec libx264 \
-	-preset ultrafast \
-	-tune zerolatency \
-	-f rtp rtp://ipアドレス:ポート番号?pkg_size=1316 \
+ffmpeg -f alsa \
+	-thread_queue_size 4096 \
+	-i hw:1 \
+	-f v4l2 \
+	-thread_queue_size 4096 \
+	-input_format yuyv422 \
+	-video_size 640x480 -i \
+	-i /dev/video0 \
+	-c libx264 \
+	-b 512k \
+	-an \
+	-f rtp rtp://ipアドレス:ポート番号 \
 	-sdp_file stream.sdp
